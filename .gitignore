@@ -1,0 +1,4 @@
+node_modules
+.env
+liquor.db3
+test.db3
