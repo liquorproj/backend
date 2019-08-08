@@ -1,8 +1,234 @@
-
 exports.up = function(knex) {
-  
+	return knex.schema
+		.createTable("users", users => {
+			users.increments("user_id");
+			users
+				.string("username")
+				.notNullable()
+				.unique();
+			users.string("password").notNullable();
+			users.string("full_name").notNullable();
+			users.string("email").notNullable();
+		})
+		.createTable("products", products => {
+			products.increments("product_id");
+			products
+				.string("product_name")
+				.notNullable()
+				.unique();
+			products
+				.integer("unit_quantity")
+				.unsigned()
+				.notNullable();
+			products
+				.decimal("unit_price")
+				.unsigned()
+				.notNullable();
+			products
+				.decimal("pack_price")
+				.unsigned()
+				.notNullable();
+			products
+				.decimal("case_price")
+				.unsigned()
+				.notNullable();
+			products
+				.integer("pack_size")
+				.unsigned()
+				.notNullable();
+			products
+				.integer("case_size")
+				.unsigned()
+				.notNullable();
+			products
+				.integer("category_id")
+				.unsigned()
+				.notNullable()
+				.references("category_id")
+				.inTable("categories")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			products
+				.integer("subcategory_id")
+				.unsigned()
+				.notNullable()
+				.references("subcategory_id")
+				.inTable("subcategories")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+		})
+		.createTable("categories", categories => {
+			categories.increments("category_id");
+			categories
+				.string("category_name")
+				.notNullable()
+				.unique();
+		})
+		.createTable("subcategories", subcategories => {
+			subcategories.increments("subcategory_id");
+			subcategories
+				.string("subcategory_name")
+				.notNullable()
+				.unique();
+			subcategories
+				.integer("category_id")
+				.unsigned()
+				.notNullable()
+				.references("category_id")
+				.inTable("categories")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+		})
+		.createTable("transaction_history", transaction_history => {
+			transaction_history.increments("transaction_id");
+			transaction_history
+				.integer("customer_id")
+				.unsigned()
+				.notNullable()
+				.references("customer_id")
+				.inTable("customers")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			transaction_history.date("transaction_date").notNullable();
+			transaction_history
+				.decimal("transaction_total")
+				.unsigned()
+				.notNullable();
+		})
+		.createTable("transaction_details", transaction_details => {
+			transaction_details.increments("transaction_detail_id");
+			transaction_details
+				.integer("transaction_id")
+				.unsigned()
+				.notNullable()
+				.references("transaction_id")
+				.inTable("transaction_history")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			transaction_details
+				.integer("product_id")
+				.unsigned()
+				.notNullable()
+				.references("product_id")
+				.inTable("products")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			transaction_details
+				.integer("unit_quantity")
+				.unsigned()
+				.notNullable();
+			transaction_details
+				.decimal("total_price")
+				.unsigned()
+				.notNullable();
+		})
+		.createTable("customers", customers => {
+			customers.increments("customer_id");
+			customers.string("customer_name").notNullable();
+		})
+		.createTable("vendors", vendors => {
+			vendors.increments("vendor_id");
+			vendors
+				.string("vendor_name")
+				.unique()
+				.notNullable();
+		})
+		.createTable("invoices", invoices => {
+			invoices.increments("invoice_id");
+			invoices
+				.integer("vendor_id")
+				.unsigned()
+				.notNullable()
+				.references("vendor_id")
+				.inTable("vendors")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			invoices.date("invoice_date").notNullable();
+			invoices
+				.decimal("invoice_total")
+				.unsigned()
+				.notNullable();
+			invoices.string("vender_invoice_id").notNullable();
+		})
+		.createTable("invoice_details", invoice_details => {
+			invoice_details.increments("invoice_detail_id");
+			invoice_details
+				.integer("product_id")
+				.unsigned()
+				.notNullable()
+				.references("product_id")
+				.inTable("products")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			invoice_details
+				.integer("invoice_id")
+				.unsigned()
+				.notNullable()
+				.references("invoice_id")
+				.inTable("invoices")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			invoice_details
+				.integer("unit_quantity")
+				.unsigned()
+				.notNullable();
+			invoice_details
+				.decimal("unit_cost")
+				.unsigned()
+				.notNullable();
+			invoice_details.date("received_date").notNullable();
+		})
+		.createTable("promotions", promotions => {
+			promotions.increments("promotion_id");
+			promotions.string("promotion_name").notNullable();
+			promotion.date("start_date").notNullable();
+			promotion.date("end_date").notNullable();
+		})
+		.createTable("promotion_details", promotion_details => {
+			promotion_details.increments("promotion_detail_id");
+			promotion_details
+				.integer("product_id")
+				.unsigned()
+				.notNullable()
+				.references("product_id")
+				.inTable("products")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			promotion_details
+				.integer("promotion_id")
+				.unsigned()
+				.notNullable()
+				.references("promotion_id")
+				.inTable("promotions")
+				.onDelete("CASCADE")
+				.onUpdate("CASCADE");
+			promotion_details
+				.decimal("promotion_unit_price")
+				.unsigned()
+				.notNullable();
+			promotion_details
+				.decimal("promotion_pack_price")
+				.unsigned()
+				.notNullable();
+			promotion_details
+				.decimal("promotion_case_price")
+				.unsigned()
+				.notNullable();
+		});
 };
 
 exports.down = function(knex) {
-  
+	return knex.schema
+		.dropTableIfExists("users")
+		.dropTableIfExists("products")
+		.dropTableIfExists("categories")
+		.dropTableIfExists("subcategories")
+		.dropTableIfExists("transaction_history")
+		.dropTableIfExists("transaction_details")
+		.dropTableIfExists("customers")
+		.dropTableIfExists("vendors")
+		.dropTableIfExists("invoices")
+		.dropTableIfExists("invoice_details")
+		.dropTableIfExists("promotions")
+		.dropTableIfExists("promotion_details");
 };
