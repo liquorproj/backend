@@ -1,7 +1,7 @@
 exports.up = function(knex) {
 	return knex.schema
 		.createTable("users", users => {
-			users.increments("user_id");
+			users.increments();
 			users
 				.string("username")
 				.notNullable()
@@ -11,7 +11,7 @@ exports.up = function(knex) {
 			users.string("email").notNullable();
 		})
 		.createTable("products", products => {
-			products.increments("product_id");
+			products.increments();
 			products
 				.string("product_name")
 				.notNullable()
@@ -44,7 +44,7 @@ exports.up = function(knex) {
 				.integer("category_id")
 				.unsigned()
 				.notNullable()
-				.references("category_id")
+				.references("id")
 				.inTable("categories")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -52,20 +52,20 @@ exports.up = function(knex) {
 				.integer("subcategory_id")
 				.unsigned()
 				.notNullable()
-				.references("subcategory_id")
+				.references("id")
 				.inTable("subcategories")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
 		})
 		.createTable("categories", categories => {
-			categories.increments("category_id");
+			categories.increments();
 			categories
 				.string("category_name")
 				.notNullable()
 				.unique();
 		})
 		.createTable("subcategories", subcategories => {
-			subcategories.increments("subcategory_id");
+			subcategories.increments();
 			subcategories
 				.string("subcategory_name")
 				.notNullable()
@@ -74,18 +74,18 @@ exports.up = function(knex) {
 				.integer("category_id")
 				.unsigned()
 				.notNullable()
-				.references("category_id")
+				.references("id")
 				.inTable("categories")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
 		})
 		.createTable("transaction_history", transaction_history => {
-			transaction_history.increments("transaction_id");
+			transaction_history.increments();
 			transaction_history
 				.integer("customer_id")
 				.unsigned()
 				.notNullable()
-				.references("customer_id")
+				.references("id")
 				.inTable("customers")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -96,12 +96,12 @@ exports.up = function(knex) {
 				.notNullable();
 		})
 		.createTable("transaction_details", transaction_details => {
-			transaction_details.increments("transaction_detail_id");
+			transaction_details.increments();
 			transaction_details
 				.integer("transaction_id")
 				.unsigned()
 				.notNullable()
-				.references("transaction_id")
+				.references("id")
 				.inTable("transaction_history")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -109,7 +109,7 @@ exports.up = function(knex) {
 				.integer("product_id")
 				.unsigned()
 				.notNullable()
-				.references("product_id")
+				.references("id")
 				.inTable("products")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -123,23 +123,23 @@ exports.up = function(knex) {
 				.notNullable();
 		})
 		.createTable("customers", customers => {
-			customers.increments("customer_id");
+			customers.increments();
 			customers.string("customer_name").notNullable();
 		})
 		.createTable("vendors", vendors => {
-			vendors.increments("vendor_id");
+			vendors.increments();
 			vendors
 				.string("vendor_name")
 				.unique()
 				.notNullable();
 		})
 		.createTable("invoices", invoices => {
-			invoices.increments("invoice_id");
+			invoices.increments();
 			invoices
 				.integer("vendor_id")
 				.unsigned()
 				.notNullable()
-				.references("vendor_id")
+				.references("id")
 				.inTable("vendors")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -151,12 +151,12 @@ exports.up = function(knex) {
 			invoices.string("vender_invoice_id").notNullable();
 		})
 		.createTable("invoice_details", invoice_details => {
-			invoice_details.increments("invoice_detail_id");
+			invoice_details.increments();
 			invoice_details
 				.integer("product_id")
 				.unsigned()
 				.notNullable()
-				.references("product_id")
+				.references("id")
 				.inTable("products")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -164,7 +164,7 @@ exports.up = function(knex) {
 				.integer("invoice_id")
 				.unsigned()
 				.notNullable()
-				.references("invoice_id")
+				.references("id")
 				.inTable("invoices")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -179,18 +179,18 @@ exports.up = function(knex) {
 			invoice_details.date("received_date").notNullable();
 		})
 		.createTable("promotions", promotions => {
-			promotions.increments("promotion_id");
+			promotions.increments();
 			promotions.string("promotion_name").notNullable();
 			promotion.date("start_date").notNullable();
 			promotion.date("end_date").notNullable();
 		})
 		.createTable("promotion_details", promotion_details => {
-			promotion_details.increments("promotion_detail_id");
+			promotion_details.increments();
 			promotion_details
 				.integer("product_id")
 				.unsigned()
 				.notNullable()
-				.references("product_id")
+				.references("id")
 				.inTable("products")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
@@ -198,7 +198,7 @@ exports.up = function(knex) {
 				.integer("promotion_id")
 				.unsigned()
 				.notNullable()
-				.references("promotion_id")
+				.references("id")
 				.inTable("promotions")
 				.onDelete("CASCADE")
 				.onUpdate("CASCADE");
